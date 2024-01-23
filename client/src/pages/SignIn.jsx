@@ -77,14 +77,14 @@ const SignIn = () => {
                   <span>Loading...</span>
                 </>
               ) : (
-                "Sign Up"
+                "Sign In"
               )}
             </Button>
           </form>
           <div className="gap-2 flex text-sm mt-5">
-            <span>Have an Account ?</span>
-            <Link to={"/sign-in"} className="text-blue-500">
-              Sign In
+            <span>Don't Have an Account ?</span>
+            <Link to={"/sign-up"} className="text-blue-500">
+              Sign Up
             </Link>
           </div>
           {error && (
