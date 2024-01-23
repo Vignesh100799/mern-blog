@@ -1,9 +1,9 @@
 import express from "express"
 import dotenv from "dotenv"
 
-
 import db from "./db/db.js"
 
+import { errorHandler } from "./middleware/error.handler.js"
 import userRoute from "./routes/user.route.js"
 import authRoute from "./routes/auth.route.js"
 
@@ -22,3 +22,5 @@ app.listen(6505, () => {
 
 app.use("/api/user", userRoute)
 app.use("/api/auth", authRoute)
+
+app.use(errorHandler)

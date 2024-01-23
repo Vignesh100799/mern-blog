@@ -1,10 +1,11 @@
+import { customError } from "../utils/customError.js"
 
 
 export const joiValidation = (schema)=>{
     return (req,res,next)=>{
         const {error} = schema.validate(req.body)
         if(error){
-         return res.status(400).json(error.details[0].message)
+         return next(customError(400,error.details[0].message))
         }
         next()
     }
