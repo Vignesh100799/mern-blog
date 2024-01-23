@@ -64,7 +64,7 @@ const SignIn = () => {
               <Label value="Password" />
               <TextInput
                 onChange={handleChange}
-                placeholder="Password"
+                placeholder="************"
                 type="password"
                 id="password"
               />
@@ -88,7 +88,7 @@ const SignIn = () => {
             </Link>
           </div>
           {error && (
-            <Alert>
+            <Alert className="mt-5">
               <span className=" text-red-600">{error}</span>
             </Alert>
           )}

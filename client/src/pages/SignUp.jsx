@@ -104,7 +104,7 @@ const SignUp = () => {
             </Link>
           </div>
           {error && (
-            <Alert>
+            <Alert className="mt-5">
               <span className=" text-red-600">{error}</span>
             </Alert>
           )}
