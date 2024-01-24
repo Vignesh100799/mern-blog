@@ -1,11 +1,18 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice.js";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -13,24 +20,22 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      setError(null);
+      dispatch(signInStart());
       const res = await fetch("/api/auth/sign-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      setLoading(false);
       const data = await res.json();
       if (data.success === false) {
-        return setError(data.message);
+        return dispatch(signInFailure(data.message));
       }
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      dispatch(signInFailure(error.message));
     }
   };
   return (
@@ -50,7 +55,6 @@ const SignIn = () => {
         </div>
         <div className="flex-1">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          
             <div>
               <Label value="Email" />
               <TextInput
@@ -69,9 +73,9 @@ const SignIn = () => {
                 id="password"
               />
             </div>
-           
+
             <Button gradientDuoTone="purpleToPink" type="submit">
-              {isLoading ? (
+              {loading ? (
                 <>
                   <Spinner size="sm"></Spinner>
                   <span>Loading...</span>
