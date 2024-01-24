@@ -1,6 +1,6 @@
 import express from "express"
 import dotenv from "dotenv"
-
+import cookieParser from "cookie-parser"
 import db from "./db/db.js"
 
 import { errorHandler } from "./middleware/error.handler.js"
@@ -14,7 +14,7 @@ db(process.env.DB_URL)
 
 
 app.use(express.json())
-
+app.use(cookieParser())
 
 app.listen(6505, () => {
     console.log("server running in port 6505")

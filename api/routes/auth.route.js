@@ -1,6 +1,6 @@
 import express from "express"
 import { joiValidation } from "../middleware/joivalidation.js"
-import { signInValidation, signUpValidation } from "../validation/auth.validationSchema.js"
+import { signInValidation, signUpValidation, updateValidation } from "../validation/auth.validationSchema.js"
 import { gooleLogin, signIn, signUp } from "../controllers/auth.controller.js"
 
 const router = express.Router()
