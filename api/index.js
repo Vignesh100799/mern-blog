@@ -23,4 +23,5 @@ app.listen(6505, () => {
 app.use("/api/user", userRoute)
 app.use("/api/auth", authRoute)
 
+
 app.use(errorHandler)
