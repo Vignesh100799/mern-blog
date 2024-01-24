@@ -9,9 +9,10 @@ import {
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon, FaSun, FaUser } from "react-icons/fa";
+import { FaArrowAltCircleRight, FaMoon, FaSun } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
+import { HiUser } from "react-icons/hi";
 const Header = () => {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state) => state.user);
@@ -63,9 +64,9 @@ const Header = () => {
               </span>
             </DropdownHeader>
             <Link to={"/dashboard?tab=profile"}>
-              <Dropdown.Item>Profile</Dropdown.Item>
+              <Dropdown.Item icon={HiUser}>Profile</Dropdown.Item>
             </Link>
-            <Dropdown.Item>SignOut</Dropdown.Item>
+            <Dropdown.Item icon={FaArrowAltCircleRight}>SignOut</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to={"sign-in"}>

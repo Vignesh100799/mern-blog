@@ -7,9 +7,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HiArrowCircleRight, HiUser } from "react-icons/hi";
+import { useSelector } from "react-redux";
 const DashSide = () => {
   const [tab, setTab] = useState();
   const location = useLocation();
+  const { theme } = useSelector((state) => state.theme);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabUrl = urlParams.get("tab");
@@ -19,12 +22,13 @@ const DashSide = () => {
   }, [location.search]);
   return (
     <Sidebar className="w-full md:w-56">
-      <SidebarItems>
-        <SidebarItemGroup className="flex flex-col gap-1">
+      <Sidebar.Items>
+        <Sidebar.ItemGroup className="flex flex-col gap-1">
           <Link to={"/dashboard?tab=profile"}>
             <Sidebar.Item
               active={tab === "profile"}
-              labelColor="dark"
+              label="User"
+              labelColor={theme === "light" ? "dark" : "light"}
               as="div"
               icon={HiUser}
             >
@@ -32,8 +36,8 @@ const DashSide = () => {
             </Sidebar.Item>
           </Link>
           <SidebarItem icon={HiArrowCircleRight}>Sign Out</SidebarItem>
-        </SidebarItemGroup>
-      </SidebarItems>
+        </Sidebar.ItemGroup>
+      </Sidebar.Items>
     </Sidebar>
   );
 };
