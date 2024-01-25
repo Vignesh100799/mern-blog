@@ -98,7 +98,7 @@ const DashProfile = () => {
     }
 
     try {
-      dispatch(updateStart);
+      dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: "PUT",
         headers: {
@@ -116,6 +116,7 @@ const DashProfile = () => {
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
+      console.log(error)
     }
   };
   const handleDeleteUser = async () => {
@@ -230,16 +231,18 @@ const DashProfile = () => {
           Update
         </Button>
       </form>
-      <Link to={"/create-post"}>
-        <Button
-          type="button"
-          gradientDuoTone="purpleToBlue"
-          className="w-full mt-5"
-          outline
-        >
-          Create post
-        </Button>
-      </Link>
+    {
+      currentUser.isAdmin ? (  <Link to={"/create-post"}>
+      <Button
+        type="button"
+        gradientDuoTone="purpleToBlue"
+        className="w-full mt-5"
+        outline
+      >
+        Create post
+      </Button>
+    </Link>) : ""
+    }
       <div className="text-red-500 flex justify-between mt-5">
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
           Delete Account

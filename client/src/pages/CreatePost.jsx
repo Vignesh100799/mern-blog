@@ -33,13 +33,15 @@ const CreatePost = () => {
             Upload Image
           </Button>
         </div>
-        <ReactQuill theme="snow"
-        placeholder="Write Something...."
-        className="h-72 mb-12"
-        required />
+        <ReactQuill
+          theme="snow"
+          placeholder="Write Something...."
+          className="h-72 mb-12"
+          required
+        />
 
-        <Button type="submit" gradientDuoTone='purpleToBlue'>
-        Publish
+        <Button type="submit" gradientDuoTone="purpleToBlue">
+          Publish
         </Button>
       </form>
     </div>
