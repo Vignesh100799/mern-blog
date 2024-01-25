@@ -34,6 +34,7 @@ const CreatePost = () => {
           </Button>
         </div>
         <ReactQuill
+          id="content"
           theme="snow"
           placeholder="Write Something...."
           className="h-72 mb-12"

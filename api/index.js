@@ -6,7 +6,7 @@ import db from "./db/db.js"
 import { errorHandler } from "./middleware/error.handler.js"
 import userRoute from "./routes/user.route.js"
 import authRoute from "./routes/auth.route.js"
-
+import postRoute from "./routes/post.route.js"
 
 const app = express()
 dotenv.config()
@@ -22,6 +22,7 @@ app.listen(6505, () => {
 
 app.use("/api/user", userRoute)
 app.use("/api/auth", authRoute)
+app.use("/api/blog", postRoute)
 
 
 app.use(errorHandler)
