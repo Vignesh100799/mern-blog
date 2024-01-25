@@ -10,6 +10,13 @@ import {
 import { app } from "../pages/google/firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from "../redux/user/userSlice";
+import { useDispatch } from "react-redux";
+import { set } from "mongoose";
 
 const DashProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -19,7 +26,11 @@ const DashProfile = () => {
   const [imgUploadingProgress, setImgUploadingProgress] = useState(null);
   const [imgUploadingError, setImgUploadingError] = useState(null);
   const [imgUploading, setImgUploading] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [updateUserFailure, setUpdateUserFailure] = useState(null);
 
+  const dispatch = useDispatch();
   const handleChangeImg = (e) => {
     const img = e.target.files[0];
     if (img) {
@@ -57,16 +68,59 @@ const DashProfile = () => {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, profilePicture: downloadURL });
           setImgurl(downloadURL);
           setImgUploading(false);
         });
       }
     );
   };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setUpdateUserFailure(null);
+    setUpdateUserSuccess(null);
+    if (Object.keys(formData).length === 0) {
+      setUpdateUserFailure("No changes made");
+      return;
+    }
+    if (imgUploading) {
+      setUpdateUserFailure("Please wait for image uploading");
+      return;
+    }
+
+    try {
+      dispatch(updateStart);
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserFailure(data.message);
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess("User updated Successfully");
+      }
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form type="submit" className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        type="submit"
+        className="flex flex-col gap-4"
+      >
         <input
           type="file"
           onChange={handleChangeImg}
@@ -109,18 +163,25 @@ const DashProfile = () => {
           <Alert color="failure">{imgUploadingError}</Alert>
         )}
         <TextInput
+          onChange={handleChange}
           defaultValue={currentUser.username}
           type="text"
           placeholder="username"
           id="username"
         />
         <TextInput
+          onChange={handleChange}
           defaultValue={currentUser.email}
           type="email"
           placeholder="email"
           id="email"
         />
-        <TextInput type="password" placeholder="password" id="password" />
+        <TextInput
+          onChange={handleChange}
+          type="password"
+          placeholder="password"
+          id="password"
+        />
         <Button
           type="submit"
           gradientDuoTone="purpleToPink"
@@ -134,6 +195,16 @@ const DashProfile = () => {
         <span className="cursor-pointer">Delete Account</span>
         <span className="cursor-pointer">Sign Out</span>
       </div>
+      {updateUserFailure && (
+        <Alert className="mt-5" color="failure">
+          {updateUserFailure}
+        </Alert>
+      )}
+      {updateUserSuccess && (
+        <Alert className="mt-5" color="success">
+          {updateUserSuccess}
+        </Alert>
+      )}
     </div>
   );
 };
