@@ -19,7 +19,7 @@ const createPost = async (req, res, next) => {
 
         await newPost.save()
 
-        res.status(200).json({ message: "Post Created successfully" })
+        res.status(200).json(newPost)
     } catch (error) {
         next(error)
     }

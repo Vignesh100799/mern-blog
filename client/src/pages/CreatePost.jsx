@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { CircularProgressbar } from "react-circular-progressbar";
-
 import {
   getDownloadURL,
   getStorage,
@@ -11,13 +10,40 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "./google/firebase.js";
+import { set } from "mongoose";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
   const [file, setFile] = useState(null);
   const [imgUploadError, setImgUploadError] = useState(null);
   const [imgUploadProgress, setImgUploadProgress] = useState(null);
   const [blogData, setBlogData] = useState({});
+  const [publishError, setPublishError] = useState(null);
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    try {
+      const res = await fetch("/api/blog/create-blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(blogData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setPublishError(data.message);
+        return;
+      }
+      if (res.ok) {
+        setPublishError(null);
+        navigate(`/blog/${data.slug}`);
+      }
+    } catch (error) {
+      setPublishError(error.message);
+    }
+  };
   const handleImgUpload = async () => {
     try {
       if (!file) {
@@ -39,7 +65,9 @@ const CreatePost = () => {
           setImgUploadProgress(progress.toFixed(0));
         },
         (error) => {
-          setImgUploadError("Could not upload image (File must be less than 2MB)");
+          setImgUploadError(
+            "Could not upload image (File must be less than 2MB)"
+          );
           setImgUploadProgress(null);
         },
         () => {
@@ -59,16 +87,23 @@ const CreatePost = () => {
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
       <h1 className="text-center text-3xl my-7 font-semibold">Create Post</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
+            onChange={(e) =>
+              setBlogData({ ...blogData, title: e.target.value })
+            }
             type="text"
             placeholder="Title"
             required
             id="title"
             className="flex-1"
           />
-          <Select>
+          <Select
+            onChange={(e) =>
+              setBlogData({ ...blogData, category: e.target.value })
+            }
+          >
             <option value="uncategorized">Select a category</option>
             <option value="javascript">JavaScript</option>
             <option value="reactjs">React.js</option>
@@ -100,12 +135,12 @@ const CreatePost = () => {
             )}
           </Button>
         </div>
-          {imgUploadError && <Alert color='failure'>{imgUploadError}</Alert>}
-          {blogData.image && (
+        {imgUploadError && <Alert color="failure">{imgUploadError}</Alert>}
+        {blogData.image && (
           <img
             src={blogData.image}
-            alt='upload'
-            className='w-full h-72 object-cover'
+            alt="upload"
+            className="w-full h-72 object-cover"
           />
         )}
         <ReactQuill
@@ -113,12 +148,18 @@ const CreatePost = () => {
           theme="snow"
           placeholder="Write Something...."
           className="h-72 mb-12"
+          onChange={(value) => setBlogData({ ...blogData, content: value })}
           required
         />
 
         <Button type="submit" gradientDuoTone="purpleToBlue">
           Publish
         </Button>
+        {publishError && (
+          <Alert className="mt-5" color="failure">
+            {publishError}
+          </Alert>
+        )}
       </form>
     </div>
   );
