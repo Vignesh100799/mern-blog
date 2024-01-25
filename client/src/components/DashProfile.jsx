@@ -21,6 +21,7 @@ import {
   signOutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 const DashProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -229,6 +230,16 @@ const DashProfile = () => {
           Update
         </Button>
       </form>
+      <Link to={"/create-post"}>
+        <Button
+          type="button"
+          gradientDuoTone="purpleToBlue"
+          className="w-full mt-5"
+          outline
+        >
+          Create post
+        </Button>
+      </Link>
       <div className="text-red-500 flex justify-between mt-5">
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
           Delete Account
@@ -247,7 +258,6 @@ const DashProfile = () => {
           {updateUserSuccess}
         </Alert>
       )}
-
       <Modal
         show={showModal}
         size="md"
