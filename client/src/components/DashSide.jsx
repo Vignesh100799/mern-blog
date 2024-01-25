@@ -1,8 +1,6 @@
 import {
   Sidebar,
   SidebarItem,
-  SidebarItemGroup,
-  SidebarItems,
 } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
