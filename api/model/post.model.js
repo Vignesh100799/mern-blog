@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const postSchema = new Schema({
-    id: {
+    userId: {
         type: Schema.Types.ObjectId,
     },
     title: {

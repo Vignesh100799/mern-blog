@@ -14,7 +14,7 @@ const createPost = async (req, res, next) => {
         const newPost = new Post({
             ...req.body,
             slug,
-            id: req.user.id
+            userId: req.user.id
         })
 
         await newPost.save()
