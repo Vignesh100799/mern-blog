@@ -18,6 +18,7 @@ import {
   deleteStart,
   deleteSuccess,
   deleteFailure,
+  signOutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -118,23 +119,37 @@ const DashProfile = () => {
   };
   const handleDeleteUser = async () => {
     setShowModal(false);
-  try {
-    dispatch(deleteStart())
-    const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-      method: "DELETE",
-    });
-    const data = res.json();
+    try {
+      dispatch(deleteStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = res.json();
 
-    if (!res.ok) {
-      dispatch(deleteFailure(data.message));
-      
-    }else{
-
-      dispatch(deleteSuccess(data));
+      if (!res.ok) {
+        dispatch(deleteFailure(data.message));
+      } else {
+        dispatch(deleteSuccess(data));
+      }
+    } catch (error) {
+      dispatch(deleteFailure(error.message));
     }
-  } catch (error) {
-    dispatch(deleteFailure(error.message))
-  }
+  };
+  const handleSignOut = async () => {
+    try {
+      const res = await fetch("/api/user/sign-out", {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signOutSuccess(data));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
@@ -218,7 +233,9 @@ const DashProfile = () => {
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
           Delete Account
         </span>
-        <span className="cursor-pointer">Sign Out</span>
+        <span onClick={handleSignOut} className="cursor-pointer">
+          Sign Out
+        </span>
       </div>
       {updateUserFailure && (
         <Alert className="mt-5" color="failure">
@@ -244,8 +261,7 @@ const DashProfile = () => {
             <h3>Are you sure want to delete your account ???</h3>
             <div className="flex justify-between mt-5">
               <Button onClick={handleDeleteUser} color="failure">
-                {" "}
-                Delete{" "}
+                Delete
               </Button>
               <Button onClick={() => setShowModal(false)} color="gray">
                 No

@@ -5,10 +5,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { HiArrowCircleRight, HiUser } from "react-icons/hi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signOutSuccess } from "../redux/user/userSlice";
 const DashSide = () => {
   const [tab, setTab] = useState();
   const location = useLocation();
+  const dispatch = useDispatch()
   const { theme } = useSelector((state) => state.theme);
 
   useEffect(() => {
@@ -18,6 +20,22 @@ const DashSide = () => {
       setTab(tabUrl);
     }
   }, [location.search]);
+  const handleSignOut = async () => {
+    try {
+      const res = await fetch("/api/user/sign-out", {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signOutSuccess(data));
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
@@ -33,7 +51,7 @@ const DashSide = () => {
               Profile
             </Sidebar.Item>
           </Link>
-          <SidebarItem icon={HiArrowCircleRight}>Sign Out</SidebarItem>
+          <SidebarItem icon={HiArrowCircleRight} onClick={handleSignOut}>Sign Out</SidebarItem>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
