@@ -70,7 +70,7 @@ export const getBlogs = async (req, res, next) => {
     }
 }
 export const deletePost = async (req, res, next) => {
-    
+
 
     if (!req.user.isAdmin || req.user.id !== req.params.userId) {
         return next(customError(400, "You are not allowed to delete this post"))
@@ -81,6 +81,27 @@ export const deletePost = async (req, res, next) => {
     } catch (error) {
         next(error)
         console.log(error)
+    }
+}
+export const updatePost = async (req, res, next) => {
+    
+    if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+        return next(customError(400, "You are not allowed to Upload this blog"))
+    }
+
+    try {
+        const updatedPost = await Post.findByIdAndUpdate(req.params.postId, {
+            $set: {
+                title: req.body.title,
+                image: req.body.image,
+                category: req.body.category,
+                content: req.body.content
+            }
+        }, { new: true })
+        res.status(200).json(updatedPost)
+
+    } catch (error) {
+        next(error)
     }
 }
 export default createPost
