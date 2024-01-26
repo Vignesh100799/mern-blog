@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Modal, Table, Button } from "flowbite-react";
-import { Link } from "react-router-dom";
-import { HiCheck, HiOutlineExclamationCircle } from "react-icons/hi";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { FaCheck, FaTimes } from "react-icons/fa";
 
 const DashUsers = () => {
@@ -101,16 +100,14 @@ const DashUsers = () => {
                     {new Date(users.updatedAt).toLocaleDateString()}
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/blog/${users.slug}`}>
-                      <img
-                        alt={users.username}
-                        className="w-10 h-10 object-cover rounded-full bg-gray-500"
-                        src={users.profilePicture}
-                      />
-                    </Link>
+                    <img
+                      alt={users.username}
+                      className="w-10 h-10 object-cover rounded-full bg-gray-500"
+                      src={users.profilePicture}
+                    />
                   </Table.Cell>
                   <Table.Cell>
-                    <Link to={`/blog/${users.slug}`}>{users.username}</Link>
+                  <Table.Cell>{users.username}</Table.Cell>
                   </Table.Cell>
                   <Table.Cell>{users.email}</Table.Cell>
                   <Table.Cell>
