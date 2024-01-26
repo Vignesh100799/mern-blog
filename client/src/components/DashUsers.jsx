@@ -9,13 +9,13 @@ const DashUsers = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [postId, setPostId] = useState("");
+  const [userId, setUserId] = useState("");
   useEffect(() => {
     const getusers = async () => {
       try {
         const res = await fetch(`/api/user/get-users`);
-
         const data = await res.json();
+
         if (res.ok) {
           setusers(data.users);
           if (data.users.length < 9) {
@@ -53,17 +53,15 @@ const DashUsers = () => {
   const handleDeleteUser = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(
-        `/api/blog/delete-blog/${postId}/${currentUser._id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`/api/user/delete-user/${userId}`, {
+        method: "DELETE",
+      });
+
       const data = await res.json();
 
       if (res.ok) {
         setusers((prev) => {
-          const indexToRemove = prev.findIndex((post) => post._id === postId);
+          const indexToRemove = prev.findIndex((user) => user._id === userId);
           if (indexToRemove !== -1) {
             const updatedusers = [
               ...prev.slice(0, indexToRemove),
@@ -106,9 +104,7 @@ const DashUsers = () => {
                       src={users.profilePicture}
                     />
                   </Table.Cell>
-                  <Table.Cell>
                   <Table.Cell>{users.username}</Table.Cell>
-                  </Table.Cell>
                   <Table.Cell>{users.email}</Table.Cell>
                   <Table.Cell>
                     {users.isAdmin ? (
@@ -121,7 +117,7 @@ const DashUsers = () => {
                     <span
                       onClick={() => {
                         setShowModal(true);
-                        setPostId(users._id);
+                        setUserId(users._id);
                       }}
                       className="font-medium text-red-500 hover:underline cursor-pointer"
                     >

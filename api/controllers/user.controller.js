@@ -62,11 +62,11 @@ export const updateUser = async (req, res, next) => {
     }
 
 }
-export const deleteUser = async (req, res, next) => {
+export const deleteUserAccount = async (req, res, next) => {
     try {
         const userID = req.params.id
         if (req.user.id !== userID) {
-            return next(errorHandler(400, "You are not allowed to delete this user"))
+            return next(customError(400, "You are not allowed to delete this user"))
         }
         await User.findByIdAndDelete(userID)
 
@@ -94,7 +94,7 @@ export const getUsers = async (req, res, next) => {
             .sort({ createdAt: sortDirection })
             .skip(startIndex)
             .limit(limit)
-     
+
         const totalUsers = await User.countDocuments()
         const now = new Date()
         const oneMonthAgo = new Date(
@@ -119,4 +119,14 @@ export const getUsers = async (req, res, next) => {
         next(error)
     }
 
+}
+export const deleteUser = async (req, res, next) => {
+    try {
+        const userID = req.params.id
+        await User.findByIdAndDelete(userID)
+
+        res.status(200).json({ message: "User deleted Successfully" })
+    } catch (error) {
+        next(error)
+    }
 }
