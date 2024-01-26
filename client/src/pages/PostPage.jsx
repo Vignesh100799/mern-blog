@@ -1,11 +1,11 @@
 import { Button, Spinner } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import CalltoAction from "../components/CalltoAction";
 
 const PostPage = () => {
   const { postSlug } = useParams();
   const [blogs, setBlogs] = useState({});
-  console.log(blogs);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchPost = async () => {
@@ -53,10 +53,11 @@ const PostPage = () => {
           {(blogs?.content?.length / 100 ?? 0).toFixed(0)} mins to read
         </span>
       </div>
-      <div   className='p-3 max-w-2xl mx-auto w-full post-content'
-        dangerouslySetInnerHTML={{ __html: blogs?.content }}>
-
-      </div>
+      <div
+        className="p-3 max-w-2xl mx-auto w-full post-content"
+        dangerouslySetInnerHTML={{ __html: blogs?.content }}
+      ></div>
+      <CalltoAction/>
     </main>
   );
 };
