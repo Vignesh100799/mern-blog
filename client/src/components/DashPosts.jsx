@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Table } from "flowbite-react";
+import { Modal, Table, Button } from "flowbite-react";
 import { Link } from "react-router-dom";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+
 const DashPosts = () => {
   const [blogs, setBlogs] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const [showMore, setShowMore] = useState(true);
-
+  const [showModal, setShowModal] = useState(false);
+  const [postId, setPostId] = useState("");
   useEffect(() => {
     const getBlogs = async () => {
       try {
@@ -16,9 +19,9 @@ const DashPosts = () => {
 
         if (res.ok) {
           setBlogs(data.posts);
-        }
-        if (data.posts.length < 9) {
-          setShowMore(false);
+          if (data.posts.length < 9) {
+            setShowMore(false);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -48,7 +51,36 @@ const DashPosts = () => {
       console.log(error);
     }
   };
+  const handleDeletePost = async () => {
+    setShowModal(false);
+    try {
+      const res = await fetch(
+        `/api/blog/delete-blog/${postId}/${currentUser._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await res.json();
 
+      if (res.ok) {
+        setBlogs((prev) => {
+          const indexToRemove = prev.findIndex((post) => post._id === postId);
+          if (indexToRemove !== -1) {
+            const updatedBlogs = [
+              ...prev.slice(0, indexToRemove),
+              ...prev.slice(indexToRemove + 1),
+            ];
+            return updatedBlogs;
+          }
+          return prev;
+        });
+      } else {
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="table-auto w-full overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && blogs.length > 0 ? (
@@ -84,7 +116,13 @@ const DashPosts = () => {
                   </Table.Cell>
                   <Table.Cell>{posts.category}</Table.Cell>
                   <Table.Cell>
-                    <span className="font-medium text-red-500 hover:underline cursor-pointer">
+                    <span
+                      onClick={() => {
+                        setShowModal(true);
+                        setPostId(posts._id);
+                      }}
+                      className="font-medium text-red-500 hover:underline cursor-pointer"
+                    >
                       Delete
                     </span>
                   </Table.Cell>
@@ -112,6 +150,28 @@ const DashPosts = () => {
       ) : (
         <p>You have no posts yet!</p>
       )}
+      <Modal
+        show={showModal}
+        size="md"
+        popup
+        onClose={() => setShowModal(false)}
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-24 w-24 text-gray-500 dark:text-gray-200 mb-4 mx-auto" />
+            <h3>Are you sure want to delete this blog ???</h3>
+            <div className="flex justify-between mt-5">
+              <Button onClick={handleDeletePost} color="failure">
+                Delete
+              </Button>
+              <Button onClick={() => setShowModal(false)} color="gray">
+                No
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

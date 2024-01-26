@@ -2,7 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 import db from "./db/db.js"
-
+import morgan from "morgan"
 import { errorHandler } from "./middleware/error.handler.js"
 import userRoute from "./routes/user.route.js"
 import authRoute from "./routes/auth.route.js"
@@ -12,7 +12,7 @@ const app = express()
 dotenv.config()
 db(process.env.DB_URL)
 
-
+app.use(morgan('tiny'))
 app.use(express.json())
 app.use(cookieParser())
 

@@ -70,8 +70,9 @@ export const getBlogs = async (req, res, next) => {
     }
 }
 export const deletePost = async (req, res, next) => {
+    
 
-    if (!req.user.isAdmin || req.user._id !== req.params.userId) {
+    if (!req.user.isAdmin || req.user.id !== req.params.userId) {
         return next(customError(400, "You are not allowed to delete this post"))
     }
     try {
@@ -79,6 +80,7 @@ export const deletePost = async (req, res, next) => {
         res.status(200).json({ message: "This post has been deleted" })
     } catch (error) {
         next(error)
+        console.log(error)
     }
 }
 export default createPost
