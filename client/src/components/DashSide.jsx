@@ -2,6 +2,7 @@ import { Sidebar, SidebarItem } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
+  HiAnnotation,
   HiArrowCircleRight,
   HiDocumentText,
   HiUser,
@@ -74,6 +75,18 @@ const DashSide = () => {
                 icon={HiUserGroup}
               >
                 Users
+              </Sidebar.Item>
+            </Link>
+          )}
+          {currentUser.isAdmin && (
+            <Link to={"/dashboard?tab=comments"}>
+              <Sidebar.Item
+                active={tab === "comments"}
+                labelColor={theme === "light" ? "dark" : "light"}
+                as="div"
+                icon={HiAnnotation}
+              >
+                Comments
               </Sidebar.Item>
             </Link>
           )}
