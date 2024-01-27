@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   HiAnnotation,
   HiArrowCircleRight,
+  HiChartPie,
   HiDocumentText,
   HiUser,
   HiUserGroup,
@@ -43,6 +44,18 @@ const DashSide = () => {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {currentUser.isAdmin && (
+            <Link to={"/dashboard?tab=dashboard"}>
+              <Sidebar.Item
+                active={tab === "dashboard" || !tab}
+                labelColor={theme === "light" ? "dark" : "light"}
+                as="div"
+                icon={HiChartPie}
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to={"/dashboard?tab=profile"}>
             <Sidebar.Item
               active={tab === "profile"}
@@ -54,6 +67,7 @@ const DashSide = () => {
               Profile
             </Sidebar.Item>
           </Link>
+
           {currentUser.isAdmin && (
             <Link to={"/dashboard?tab=blogs"}>
               <Sidebar.Item
