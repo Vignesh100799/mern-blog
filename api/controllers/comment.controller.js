@@ -1,4 +1,5 @@
 import Comment from "../model/comment.model.js"
+import User from "../model/user.model.js"
 import { customError } from "../utils/customError.js";
 
 
@@ -19,6 +20,21 @@ export const createComment = async (req, res, next) => {
 
         await newComment.save()
         res.status(200).json(newComment)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getComments = async (req, res, next) => {
+
+    try {
+        const comment = await Comment.find({ postId: req.params.postId }).sort({
+            createdAt: -1
+        })
+       
+
+        res.status(200).json(comment)
+
     } catch (error) {
         next(error)
     }

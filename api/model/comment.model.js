@@ -14,6 +14,7 @@ const commentSchema = new Schema({
     userId: {
         type: String,
         required: true
+
     },
     likes: {
         type: Array,
@@ -24,7 +25,7 @@ const commentSchema = new Schema({
         default: 0
     }
 
-})
+}, { timestamps: true })
 
 const Comment = mongoose.model("Comment", commentSchema)
 
